@@ -10,6 +10,11 @@ Claude Code Skills 完整指南，包含 skill 格式、调用方式、最佳实
 ### 2. spec-kit-workflow 🚀
 使用简化版 Spec-Kit 工作流快速开发 Web 应用并发布到公网。
 
+### 3. dianxiaomi-stats 📊
+店小秘店铺业绩统计工具。通过 Chrome 浏览器获取店小秘 ERP 的店铺业绩数据。
+
+**最新优化**：修复了浏览器重复打开导致登录丢失的问题，使用 AppleScript 激活现有 Chrome 窗口。
+
 ## 快速开始
 
 ### 安装工具
@@ -35,3 +40,4 @@ ngrok config add-authtoken YOUR_TOKEN
 
 - [Claude Code Guide](./claude-code-guide/SKILL.md)
 - [Spec-Kit Workflow](./spec-kit-workflow/SKILL.md)
+- [店小秘统计](./dianxiaomi-stats/SKILL.md)
