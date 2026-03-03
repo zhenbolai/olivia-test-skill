@@ -1,0 +1,10 @@
+{
+  "openclaw": {
+    "emoji": "🧪",
+    "requires": {
+      "bins": [],
+      "pip": []
+    },
+    "install": []
+  }
+}
