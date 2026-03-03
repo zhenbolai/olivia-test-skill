@@ -4,16 +4,24 @@
 
 ## 包含的 Skills
 
-### 1. claude-code-guide
+### 1. dianxiaomi-stats 📊
+店小秘店铺业绩统计工具。支持：
+- 查询全部店铺或指定店铺业绩
+- 支持指定日期查询
+- 获取订单量、付款金额、退款金额
+
+**使用示例:**
+```bash
+python3 dianxiaomi-stats/get_store_stats.py          # 查询全部昨日
+python3 dianxiaomi-stats/get_store_stats.py 20       # 查询20店昨日
+python3 dianxiaomi-stats/get_store_stats.py 20 2026-02-28  # 查询20店2月28日
+```
+
+### 2. claude-code-guide
 Claude Code Skills 完整指南，包含 skill 格式、调用方式、最佳实践。
 
-### 2. spec-kit-workflow 🚀
+### 3. spec-kit-workflow 🚀
 使用简化版 Spec-Kit 工作流快速开发 Web 应用并发布到公网。
-
-### 3. dianxiaomi-stats 📊
-店小秘店铺业绩统计工具。通过 Chrome 浏览器获取店小秘 ERP 的店铺业绩数据。
-
-**最新优化**：修复了浏览器重复打开导致登录丢失的问题，使用 AppleScript 激活现有 Chrome 窗口。
 
 ## 快速开始
 
@@ -38,6 +46,6 @@ ngrok config add-authtoken YOUR_TOKEN
 
 ## 文档
 
+- [店小秘统计](./dianxiaomi-stats/SKILL.md)
 - [Claude Code Guide](./claude-code-guide/SKILL.md)
 - [Spec-Kit Workflow](./spec-kit-workflow/SKILL.md)
-- [店小秘统计](./dianxiaomi-stats/SKILL.md)

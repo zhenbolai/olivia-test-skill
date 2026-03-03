@@ -2,69 +2,93 @@
 name: dianxiaomi-stats
 description: >
   店小秘店铺业绩统计工具。通过 Chrome 浏览器获取店小秘 ERP 的店铺业绩数据。
-  用于：(1) 查询店铺销售数据，(2) 获取订单量和付款金额，(3) 追踪每日业绩趋势。
-  支持获取全部店铺或指定单个店铺的数据。
-  注意：需要 Chrome 已登录店小秘。
-metadata:
-  {
-    "openclaw":
-      {
-        "emoji": "📊",
-        "requires":
-          {
-            "bins": ["python3"],
-            "pip": ["playwright"],
-          },
-        "install":
-          [
-            {
-              "kind": "pip",
-              "package": "playwright",
-              "label": "pip install playwright && playwright install chromium",
-            },
-          ],
-      },
-  }
+  支持查询全部店铺或指定店铺的订单量、付款金额、退款金额等数据。
+  支持指定日期查询。
+  用于：查询店铺销售数据、获取订单量和付款金额、追踪每日业绩趋势。
+disable-model-invocation: false
 ---
 
 # 店小秘店铺业绩统计
 
-通过 Chrome 浏览器获取店小秘 ERP 的店铺业绩数据。
+通过 Chrome 浏览器自动获取店小秘 ERP 的店铺业绩数据。
+
+## 功能
+
+- ✅ 查询全部店铺或指定店铺业绩
+- ✅ 支持指定日期查询
+- ✅ 获取订单量、付款金额、退款金额
+- ✅ 支持定时自动推送（每日业绩）
+- ✅ 修复了浏览器打开方式和店铺筛选
 
 ## 前置要求
 
-1. 安装 Playwright：
-   ```bash
-   pip install playwright
-   playwright install chromium
-   ```
-
-2. 在 Chrome 中登录店小秘（只需要登录一次，后续会自动保持登录状态）
+1. Chrome 已登录店小秘
+2. Chrome 已开启 AppleScript JavaScript 权限：
+   - 菜单 → 查看 → 开发者 → 允许 Apple 事件中的 JavaScript
 
 ## 使用方法
 
-### 获取全部店铺数据
+### 基本查询
 
 ```bash
-python3 /path/to/dianxiaomi_stats.py
+# 进入 skill 目录
+cd ~/.openclaw/skills/dianxiaomi-stats
+
+# 查询全部店铺昨日业绩
+python3 get_store_stats.py
+
+# 查询指定店铺昨日业绩（支持店铺名关键词）
+python3 get_store_stats.py 20
+python3 get_store_stats.py 27店
+python3 get_store_stats.py 6店
 ```
 
-### 获取指定店铺数据
+### 指定日期查询
 
 ```bash
-python3 /path/to/dianxiaomi_stats.py "27店"
-python3 /path/to/dianxiaomi_stats.py "6店"
+# 查询指定店铺指定日期
+python3 get_store_stats.py 20 2026-02-28
+python3 get_store_stats.py 27店 2026-03-01
 ```
 
-## 输出字段
+### 昨日速卖通汇总（定时任务用）
 
-- **店铺账号**: 店铺名称
-- **日期**: 统计数据日期
-- **订单量**: 订单数量
-- **付款金额**: 付款金额（美元）
+```bash
+python3 get_aliexpress_daily.py
+python3 get_aliexpress_daily_cron.py
+```
 
-## 注意事项
+## 输出示例
 
-- 使用现有的 Chrome 用户数据目录以保持登录状态
-- 脚本会自动启动 Chrome 并打开店小秘页面
-- 数据来源于店小秘 ERP 的"店铺业绩"页面
+```
+📊 20 业绩 (2026-02-28)
+━━━━━━━━━━━━━━━━━━━
+📦 订单量: 5
+💰 付款金额: $1416.77
+💸 退款金额: $0.00
+━━━━━━━━━━━━━━━━━━━
+```
+
+## 定时任务
+
+- 每天北京时间 5:00 自动推送昨日速卖通业绩到飞书群
+- 任务可通过 OpenClaw cron 管理
+
+## 文件说明
+
+| 文件 | 说明 |
+|------|------|
+| get_store_stats.py | 主脚本，支持店铺+日期查询 |
+| get_aliexpress_daily.py | 手动版，获取速卖通汇总 |
+| get_aliexpress_daily_cron.py | 定时任务版 |
+| FRONTEND_ANALYSIS.md | 店小秘前端代码分析 |
+
+## 故障排除
+
+### 问题：获取数据失败
+- 检查 Chrome 是否开启了 AppleScript JavaScript 权限
+- 检查店小秘页面是否正常加载
+
+### 问题：店铺筛选失败
+- 确保先取消全选，再选择店铺
+- 店铺名可以使用部分匹配，如 "20"、"27店"
