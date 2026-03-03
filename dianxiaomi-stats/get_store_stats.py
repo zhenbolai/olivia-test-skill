@@ -290,13 +290,18 @@ if __name__ == "__main__":
     date_str = None
     show_change = True
     
-    for arg in sys.argv[1:]:
-        if arg.startswith("20"):
-            store_name = arg
-        elif "-" in arg and len(arg) == 10:
-            date_str = arg
-        elif arg == "--no-change":
+    args = sys.argv[1:]
+    
+    # 解析参数
+    for i, arg in enumerate(args):
+        if arg == "--no-change":
             show_change = False
+        elif "-" in arg and len(arg) == 10 and arg[4] == "-" and arg[7] == "-":
+            # 日期格式: 2026-02-28
+            date_str = arg
+        elif not arg.startswith("-"):
+            # 店铺名称
+            store_name = arg
     
     if not store_name:
         print("查询全部店铺昨日数据（含环比变化）")
