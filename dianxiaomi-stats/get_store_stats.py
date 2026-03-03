@@ -170,6 +170,7 @@ def get_store_stats(store_name=None, date_str=None, show_change=True):
         target_date = datetime.strptime(date_str, "%Y-%m-%d")
         prev_date = target_date - timedelta(days=1)
         prev_date_str = prev_date.strftime("%Y-%m-%d")
+        target_date_str = target_date.strftime("%Y-%m-%d")
     else:
         # 默认昨天
         target_date = datetime.now() - timedelta(days=1)
@@ -282,8 +283,8 @@ if __name__ == "__main__":
     print("用法:")
     print("  python3 get_store_stats.py                           # 昨日数据+环比")
     print("  python3 get_store_stats.py 20                        # 20店昨日+环比")
-    print("  python3 get_store_stats.py 20 2026-02-28             # 20店2月28日+环比")
-    print("  python3 get_store_stats.py 20 2026-02-28 --no-change  # 不显示环比")
+    print("  python3 get_store_stats.py 20 2026-02-28           # 20店2月28日+环比")
+    print("  python3 get_store_stats.py --analyze                # 30天店铺分析")
     print("="*60)
     
     store_name = None
@@ -302,6 +303,14 @@ if __name__ == "__main__":
         elif not arg.startswith("-"):
             # 店铺名称
             store_name = arg
+        elif arg in ["--analyze", "-a"]:
+            # 30天分析模式
+            import sys
+            sys.path.insert(0, "/Users/lzb/.openclaw/skills/dianxiaomi-stats")
+            from analyze_stores import analyze_stores
+            result = analyze_stores()
+            print(result)
+            sys.exit(0)
     
     if not store_name:
         print("查询全部店铺昨日数据（含环比变化）")
