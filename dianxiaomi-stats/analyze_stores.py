@@ -77,9 +77,29 @@ def analyze_stores():
     # 收集所有店铺的数据
     all_stores_data = []
     
-    # 分析前10个店铺
-    for i, store in enumerate(stores[:10]):
-        print(f"\n正在分析: {store} ({i+1}/{min(len(stores), 10)})...")
+    # 分析所有店铺
+    # 先点击"30天内"按钮
+    print("点击 30天内 按钮...")
+    js_30days = '''(function() {
+        var btns = document.querySelectorAll(".ant-radio-button-wrapper");
+        for(var i=0; i<btns.length; i++) {
+            if(btns[i].textContent.includes("30天内")) {
+                btns[i].click();
+                return "clicked 30天内";
+            }
+        }
+        return "30天内 not found";
+    })();'''
+    
+    js_escaped = js_30days.replace('"', '\\"')
+    subprocess.run(
+        ["osascript", "-e", f'tell application "Google Chrome" to execute active tab of window 1 javascript "{js_escaped}"'],
+        capture_output=True, text=True, timeout=30
+    )
+    time.sleep(15)
+    
+    for i, store in enumerate(stores[:5]):
+        print(f"\n正在分析: {store} ({i+1}/{len(stores)})...")
         
         # 筛选店铺 - 分步执行确保成功
         # 第一步：取消全选
@@ -135,8 +155,8 @@ def analyze_stores():
         
         print(f"  选择结果: {result.stdout.strip()}")
         
-        # 等待数据刷新
-        time.sleep(15)
+        # 等待数据刷新 - 增加等待时间确保数据加载
+        time.sleep(20)
         
         # 第三步：获取数据
         js_data = '''(function() {
