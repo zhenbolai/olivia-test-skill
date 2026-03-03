@@ -1,5 +1,5 @@
 """
-店小秘店铺业绩统计 - 30天店铺分析
+店小秘店铺业绩统计 - 30天店铺分析（修复版）
 """
 
 import subprocess
@@ -35,7 +35,7 @@ def analyze_stores():
     open_url_in_chrome(target_url)
     
     print("等待页面加载...")
-    time.sleep(20)
+    time.sleep(25)
     
     # 先获取所有店铺列表
     print("获取店铺列表...")
@@ -47,7 +47,7 @@ def analyze_stores():
         var labels = container.querySelectorAll("label");
         var stores = [];
         
-        for(var i=1; i<labels.length; i++) {  // 跳过"全部"
+        for(var i=1; i<labels.length; i++) {
             var text = labels[i].textContent.trim();
             if(text) stores.push(text);
         }
@@ -77,10 +77,12 @@ def analyze_stores():
     # 收集所有店铺的数据
     all_stores_data = []
     
-    for i, store in enumerate(stores[:10]):  # 先分析前10个店铺
+    # 分析前10个店铺
+    for i, store in enumerate(stores[:10]):
         print(f"\n正在分析: {store} ({i+1}/{min(len(stores), 10)})...")
         
-        # 筛选店铺
+        # 筛选店铺 - 分步执行确保成功
+        # 第一步：取消全选
         js_uncheck = '''(function() {
             var containers = document.querySelectorAll(".d-checkbox-group-wrapper");
             var container = containers[1];
@@ -99,35 +101,44 @@ def analyze_stores():
             capture_output=True, text=True, timeout=30
         )
         
-        time.sleep(1)
+        time.sleep(2)
         
-        # 选择店铺
+        # 第二步：选择指定店铺
+        # 提取店铺名称的主要部分（如 "20" 从 "20（速卖通）"）
+        store_key = store.split("（")[0].split("（")[0].strip()
+        
         js_check = f'''(function() {{
             var containers = document.querySelectorAll(".d-checkbox-group-wrapper");
             var container = containers[1];
             if(!container) return "no container";
             
             var labels = container.querySelectorAll("label");
+            var found = false;
             
             for(var j=0; j<labels.length; j++) {{
                 var text = labels[j].textContent.trim();
-                if(text.includes("{store}")) {{
+                if(text.includes("{store_key}")) {{
                     labels[j].click();
+                    found = true;
                     return "selected: " + text;
                 }}
             }}
-            return "not found";
+            return "not found: {store_key}";
         }})();'''
         
         js_escaped = js_check.replace('"', '\\"')
-        subprocess.run(
+        
+        result = subprocess.run(
             ["osascript", "-e", f'tell application "Google Chrome" to execute active tab of window 1 javascript "{js_escaped}"'],
             capture_output=True, text=True, timeout=30
         )
         
-        time.sleep(12)
+        print(f"  选择结果: {result.stdout.strip()}")
         
-        # 获取数据
+        # 等待数据刷新
+        time.sleep(15)
+        
+        # 第三步：获取数据
         js_data = '''(function() {
             var rows = document.querySelectorAll('tr.vxe-body--row');
             var result = [];
@@ -163,7 +174,6 @@ def analyze_stores():
         total_refund = 0
         
         for item in data:
-            # 只计算过去30天（跳过合计）
             if item.get("日期") == "合计":
                 continue
             try:
@@ -172,6 +182,8 @@ def analyze_stores():
                 pass
             total_payment += parse_money(item.get("付款总金额", "$0"))
             total_refund += parse_money(item.get("退款金额", "$0"))
+        
+        print(f"  数据: 订单={total_orders}, 付款=${total_payment:.2f}, 退款=${total_refund:.2f}")
         
         if total_orders > 0 or total_payment > 0:
             all_stores_data.append({
@@ -233,10 +245,5 @@ def analyze_stores():
 
 if __name__ == "__main__":
     import sys
-    
-    if "--analyze" in sys.argv or "-a" in sys.argv:
-        result = analyze_stores()
-        print(result)
-    else:
-        print("用法:")
-        print("  python3 analyze_stores.py --analyze")
+    result = analyze_stores()
+    print(result)
