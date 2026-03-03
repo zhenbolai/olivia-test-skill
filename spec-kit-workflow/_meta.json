@@ -1,0 +1,14 @@
+{
+  "openclaw": {
+    "emoji": "🚀",
+    "requires": {
+      "bins": ["claude", "uv", "ngrok", "git", "gh"],
+      "pip": []
+    },
+    "install": [
+      "brew install uv",
+      "brew install ngrok",
+      "ngrok config add-authtoken YOUR_TOKEN"
+    ]
+  }
+}

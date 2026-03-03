@@ -1,22 +1,37 @@
-# Claude Code Guide Skill
+# OpenClaw Skills for Olivia
 
-帮助 OpenClaw 更好地调用 Claude Code Skills 的指南。
+这里存放 Olivia 的 OpenClaw 自定义 skills。
 
-## 包含内容
+## 包含的 Skills
 
-- Skill 格式和结构
-- 调用方式和最佳实践
-- 创建新 Skill 的步骤
-- 推送到 GitHub 的方法
+### 1. claude-code-guide
+Claude Code Skills 完整指南，包含 skill 格式、调用方式、最佳实践。
 
-## 使用方法
+### 2. spec-kit-workflow 🚀
+使用简化版 Spec-Kit 工作流快速开发 Web 应用并发布到公网。
 
-当需要创建或使用 Claude Code Skills 时，调用此 skill:
+## 快速开始
+
+### 安装工具
+
+```bash
+# 安装 uv
+brew install uv
+
+# 安装 ngrok
+brew install ngrok
+
+# 配置 ngrok (需要从 https://dashboard.ngrok.com 获取 token)
+ngrok config add-authtoken YOUR_TOKEN
 ```
-/claude-code-guide
+
+### 调用 Claude Code
+
+```bash
+/Users/lzb/.local/bin/claude --print --dangerously-skip-permissions
 ```
 
-## 参考文档
+## 文档
 
-- 官方文档: https://code.claude.com/docs/en/skills
-- Agent Skills 标准: https://agentskills.io
+- [Claude Code Guide](./claude-code-guide/SKILL.md)
+- [Spec-Kit Workflow](./spec-kit-workflow/SKILL.md)
