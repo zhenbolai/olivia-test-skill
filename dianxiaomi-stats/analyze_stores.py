@@ -155,8 +155,8 @@ def analyze_stores():
         
         print(f"  选择结果: {result.stdout.strip()}")
         
-        # 等待数据刷新 - 增加等待时间确保数据加载
-        time.sleep(20)
+        # 等待数据刷新 - 增加等待时间确保数据加载完成
+        time.sleep(25)
         
         # 第三步：获取数据
         js_data = '''(function() {
