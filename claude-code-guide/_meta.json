@@ -1,8 +1,8 @@
 {
   "openclaw": {
-    "emoji": "🧪",
+    "emoji": "📚",
     "requires": {
-      "bins": [],
+      "bins": ["gh", "git"],
       "pip": []
     },
     "install": []
